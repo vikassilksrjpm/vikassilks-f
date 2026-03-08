@@ -5,6 +5,7 @@ import axios from 'axios'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import InputField from '../components/InputField'
+import { API_BASE_URL } from '../config/api'
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -35,7 +36,7 @@ export default function SignupPage() {
     setLoading(true)
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/register', formData)
+      const response = await axios.post(`${API_BASE_URL}/auth/register`, formData)
       
       if (response.data.success) {
         toast.success('Signup successful! Please login.')

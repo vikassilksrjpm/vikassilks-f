@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import InputField from '../components/InputField'
+import { API_BASE_URL } from '../config/api'
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -28,7 +29,7 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', formData)
+      const response = await axios.post(`${API_BASE_URL}/auth/login`, formData)
       
       if (response.data.success) {
         login(response.data.user, response.data.token)
