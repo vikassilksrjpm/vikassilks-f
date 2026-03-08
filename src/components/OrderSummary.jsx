@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { redirectToWhatsApp } from '../utils/whatsapp'
 
 export default function OrderSummary({ subtotal }) {
   const [couponCode, setCouponCode] = useState('')
@@ -63,7 +64,7 @@ export default function OrderSummary({ subtotal }) {
       </div>
 
       {/* Checkout Button */}
-      <button className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-4 rounded-lg transition-all hover:scale-[1.02] shadow-md">
+      <button onClick={() => redirectToWhatsApp()} className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-4 rounded-lg transition-all hover:scale-[1.02] shadow-md">
         Proceed to Checkout
       </button>
 

@@ -1,21 +1,16 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useCart } from '../context/CartContext'
-import { useAuth } from '../context/AuthContext'
+import { redirectToWhatsApp } from '../utils/whatsapp'
 
 export default function ProductInfo({ product }) {
   const [quantity, setQuantity] = useState(1)
   const [isWishlisted, setIsWishlisted] = useState(false)
-  const navigate = useNavigate()
-  const { addToCart } = useCart()
-  const { user } = useAuth()
+
+  const handleBuyNow = () => {
+    redirectToWhatsApp(product.name, product.price)
+  }
 
   const handleAddToCart = () => {
-    if (!user) {
-      navigate('/login')
-      return
-    }
-    addToCart(product.id, quantity)
+    redirectToWhatsApp(product.name, product.price)
   }
 
   const increaseQuantity = () => {
@@ -81,7 +76,7 @@ export default function ProductInfo({ product }) {
         </div>
 
         <div className="space-y-3">
-          <button className="w-full bg-[#294B99] text-white py-3 px-6 rounded-md font-semibold hover:bg-blue-800 transition-colors">
+          <button onClick={handleBuyNow} className="w-full bg-[#294B99] text-white py-3 px-6 rounded-md font-semibold hover:bg-blue-800 transition-colors">
             Buy It Now
           </button>
           

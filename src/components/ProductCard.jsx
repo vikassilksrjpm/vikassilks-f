@@ -1,13 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useCart } from '../context/CartContext'
-import { useAuth } from '../context/AuthContext'
+import { redirectToWhatsApp } from '../utils/whatsapp'
 
 export default function ProductCard({ product }) {
   const [isWishlisted, setIsWishlisted] = useState(false)
   const navigate = useNavigate()
-  const { addToCart } = useCart()
-  const { user } = useAuth()
 
   const handleProductClick = () => {
     navigate(`/product/${product.id}`)
@@ -15,11 +12,7 @@ export default function ProductCard({ product }) {
 
   const handleAddToCart = (e) => {
     e.stopPropagation()
-    if (!user) {
-      navigate('/login')
-      return
-    }
-    addToCart(product.id, 1)
+    redirectToWhatsApp(product.name, product.price)
   }
 
   return (

@@ -1,3 +1,5 @@
+import { redirectToWhatsApp } from '../utils/whatsapp'
+
 function BannerCard() {
   return (
     <div className="bg-gradient-to-br from-[#E8D5C4] to-[#D4B896] rounded-2xl shadow-lg overflow-hidden h-full flex">
@@ -21,7 +23,7 @@ function BannerCard() {
           <p className="text-2xl font-medium text-[#4A3428]">Sarees</p>
         </div>
 
-        <button className="bg-red-600 hover:bg-red-700 text-white font-semibold px-8 py-3 rounded-full transition-colors shadow-md">
+        <button onClick={() => redirectToWhatsApp()} className="bg-red-600 hover:bg-red-700 text-white font-semibold px-8 py-3 rounded-full transition-colors shadow-md">
           View Collection
         </button>
       </div>

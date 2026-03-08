@@ -1,21 +1,14 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useCart } from '../context/CartContext'
-import { useAuth } from '../context/AuthContext'
+import { redirectToWhatsApp } from '../utils/whatsapp'
 import { getPlaceholder } from '../utils/placeholders'
 
 function ProductCard({ product }) {
   const [isWishlisted, setIsWishlisted] = useState(false)
   const navigate = useNavigate()
-  const { addToCart } = useCart()
-  const { user } = useAuth()
 
   const handleAddToCart = () => {
-    if (!user) {
-      navigate('/login')
-      return
-    }
-    addToCart(product.id, 1)
+    redirectToWhatsApp(product.name, product.price)
   }
 
   return (
