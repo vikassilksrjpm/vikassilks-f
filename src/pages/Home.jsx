@@ -111,14 +111,9 @@ export default function Home() {
     <div className="min-h-screen bg-[#FAF5EF]">
       <Header />
       <HeroCarousel />
-      <ShopByPrice />
       <ImageCarousel />
       <JustArrived />
       <FeaturedCollection />
-      <ShopByCollections />
-      <CollectionSection title="Kanjivaram Silks" products={kanjivaramProducts} badge="New In!" />
-      <CollectionSection title="Raw Silk Sarees" products={rawSilkProducts} badge="New In!" />
-      <CollectionSection title="Kanchi Cotton Sarees" products={kanchiCottonProducts} badge="New In!" />
       <TestimonialsSection />
       <BlogSection />
       <OurStore />

@@ -1,13 +1,11 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { redirectToWhatsApp } from '../utils/whatsapp'
 import { getPlaceholder } from '../utils/placeholders'
+import { redirectToWhatsApp } from '../utils/whatsapp'
 
 function ProductCard({ product }) {
   const [isWishlisted, setIsWishlisted] = useState(false)
-  const navigate = useNavigate()
 
-  const handleAddToCart = () => {
+  const handleWhatsApp = () => {
     redirectToWhatsApp(product.name, product.price)
   }
 
@@ -18,7 +16,7 @@ function ProductCard({ product }) {
           src={product.image}
           alt={product.name}
           className="w-full h-72 object-cover cursor-pointer"
-          onClick={() => navigate(`/product/${product.id}`)}
+          onClick={handleWhatsApp}
         />
 
         {product.isNew && (
@@ -48,7 +46,7 @@ function ProductCard({ product }) {
       <div className="text-center space-y-2">
         <h3 className="text-sm font-medium text-gray-800">{product.name}</h3>
         <p className="text-sm text-gray-500">{product.price}</p>
-        <button onClick={handleAddToCart} className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 rounded-full transition-colors">
+        <button onClick={handleWhatsApp} className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 rounded-full transition-colors">
           Add to Cart
         </button>
       </div>

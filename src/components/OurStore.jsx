@@ -23,11 +23,23 @@ export default function OurStore() {
             
             <div className="space-y-4">
               <div>
-                <h3 className="font-semibold text-[#294B99] mb-2">Address</h3>
-                <p className="text-gray-700">
-                  123 Fashion Street, Silk Market<br />
-                  Mumbai, Maharashtra 400001
-                </p>
+                <h3 className="font-semibold text-[#294B99] mb-2">Our Branches</h3>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-sm font-medium text-gray-800">Branch 1 - Rajapalayam</p>
+                    <p className="text-gray-700 text-sm">
+                      RJPM Bus Station to Bypass Rd,<br />
+                      Rajapalayam, Tamil Nadu 626117
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-800">Branch 2 - Sankarankoil</p>
+                    <p className="text-gray-700 text-sm">
+                      Gomathiyapuram,<br />
+                      Sankarankoil, Tamil Nadu 627756
+                    </p>
+                  </div>
+                </div>
               </div>
               
               <div>
@@ -41,8 +53,8 @@ export default function OurStore() {
               <div>
                 <h3 className="font-semibold text-[#294B99] mb-2">Contact Info</h3>
                 <p className="text-gray-700">
-                  Phone: +91 98765 43210<br />
-                  Email: info@sareeshop.com
+                  Phone: +91 84382 55947<br />
+                  Email: vikassilks@gmail.com
                 </p>
               </div>
             </div>

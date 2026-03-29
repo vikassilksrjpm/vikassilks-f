@@ -2,11 +2,14 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
+import { redirectToWhatsApp } from '../utils/whatsapp'
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState(null)
   const [userDropdownOpen, setUserDropdownOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const { user, logout } = useAuth()
   const { cart } = useCart()
   const navigate = useNavigate()
@@ -17,39 +20,64 @@ export default function Header() {
     setUserDropdownOpen(false)
   }
 
+  const handleSearch = (e) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      redirectToWhatsApp(searchQuery.trim())
+      setSearchQuery('')
+      setSearchOpen(false)
+      setIsMobileMenuOpen(false)
+    }
+  }
+
   const menuItems = [
     { name: 'JUST ARRIVED', link: '/just-arrived' },
     { name: 'BRIDAL COLLECTION', link: '/bridal-collection' },
-    { name: 'SILK', hasDropdown: true },
-    { name: 'COTTON', hasDropdown: true },
-    { name: 'SILK COTTON', hasDropdown: true },
-    { name: 'TUSSARS', hasDropdown: true },
-    { name: 'LINENS', link: '/' },
-    { name: 'FANCY', hasDropdown: true },
-    { name: 'DESIGNER', link: '/' },
-    { name: 'BLOGS', link: '/blogs' }
+    {
+      name: 'WOMENS',
+      hasDropdown: true,
+      dropdownItems: [
+        { name: 'Kurtis', link: '/' },
+        { name: 'Salwar Suits / Co-ord Set', link: '/' },
+        { name: 'T-Shirts', link: '/' },
+        { name: 'Maternity Wear', link: '/' },
+        { name: 'Night Wear', link: '/' },
+        { name: 'Essentials', link: '/' }
+      ]
+    },
+    {
+      name: 'MENS',
+      hasDropdown: true,
+      dropdownItems: [
+        { name: 'T-Shirts', link: '/' },
+        { name: 'Just White Shirts', link: '/' },
+        { name: 'Shirt & Dhoti Combo', link: '/' },
+        { name: 'Essentials', link: '/' }
+      ]
+    },
+    {
+      name: 'SAREES',
+      hasDropdown: true,
+      dropdownItems: [
+        { name: 'Semi Kanchi Silks', link: '/' },
+        { name: 'Art Silk', link: '/' },
+        { name: 'Cotton Sarees', link: '/' }
+      ]
+    }
   ]
 
   return (
     <header className="sticky top-0 z-50 bg-[#254A99] shadow-md">
       {/* Main Navbar */}
-      <div className="px-4 py-4">
-        <div className="max-w-7xl mx-auto grid grid-cols-3 items-center">
-          {/* Left - Search */}
-          <div className="flex items-center space-x-2 text-white cursor-pointer">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <span className="hidden md:inline text-sm">Search</span>
-          </div>
-
-          {/* Center - Logo */}
-          <div className="flex justify-center">
+      <div className="px-4 py-2">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          {/* Left - Logo */}
+          <div className="flex items-center">
             <Link to="/">
               <img 
                 src="https://res.cloudinary.com/dhkljok4i/image/upload/v1771076871/VIKAS_LOGO_1_t9hkmb.png" 
                 alt="SareeShop" 
-                className="h-16 md:h-20 w-auto"
+                className="h-12 md:h-14 w-auto"
               />
             </Link>
           </div>
@@ -142,34 +170,94 @@ export default function Header() {
       {/* Secondary Menu Bar - Desktop */}
       <nav className="hidden md:block bg-white border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-4">
-          <ul className="flex items-center justify-center space-x-8 py-3">
-            {menuItems.map((item, index) => (
-              <li key={index} className="relative group">
-                {item.hasDropdown ? (
-                  <button className="flex items-center space-x-1 text-sm font-medium text-[#5D4037] hover:text-[#254A99] transition-colors">
-                    <span>{item.name}</span>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                ) : (
-                  <Link 
-                    to={item.link} 
-                    className="text-sm font-medium text-[#5D4037] hover:text-[#254A99] transition-colors"
-                  >
-                    {item.name}
-                  </Link>
+          <div className="flex items-center justify-between py-3">
+            <ul className="flex items-center space-x-8">
+              {menuItems.map((item, index) => (
+                <li key={index} className="relative group">
+                  {item.hasDropdown ? (
+                    <>
+                      <button className="flex items-center space-x-1 text-sm font-medium text-[#5D4037] hover:text-[#254A99] transition-colors">
+                        <span>{item.name}</span>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+                      <div className="absolute top-full left-0 mt-1 w-52 bg-white rounded-md shadow-lg py-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                        {item.dropdownItems.map((drop, i) => (
+                          <button
+                            key={i}
+                            onClick={() => redirectToWhatsApp(drop.name)}
+                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#254A99]"
+                          >
+                            {drop.name}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <Link
+                      to={item.link}
+                      className="text-sm font-medium text-[#5D4037] hover:text-[#254A99] transition-colors"
+                    >
+                      {item.name}
+                    </Link>
+                  )}
+                  <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#254A99] group-hover:w-full transition-all duration-300"></div>
+                </li>
+              ))}
+            </ul>
+
+            {/* Right - Search */}
+            <form onSubmit={handleSearch} className="flex items-center">
+              <div className={`flex items-center gap-2 border border-gray-300 rounded-full px-3 py-1.5 transition-all duration-300 ${
+                searchOpen ? 'w-56 bg-white' : 'w-9 bg-transparent border-transparent'
+              }`}>
+                <button
+                  type="button"
+                  onClick={() => setSearchOpen(!searchOpen)}
+                  className="text-[#5D4037] hover:text-[#254A99] flex-shrink-0"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </button>
+                {searchOpen && (
+                  <input
+                    autoFocus
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search"
+                    className="text-sm text-gray-700 placeholder-gray-400 focus:outline-none w-full bg-transparent"
+                  />
                 )}
-                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#254A99] group-hover:w-full transition-all duration-300"></div>
-              </li>
-            ))}
-          </ul>
+              </div>
+            </form>
+          </div>
         </div>
       </nav>
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white border-t border-gray-200 animate-slideDown">
+          {/* Search Bar */}
+          <div className="px-4 py-3 border-b border-gray-100">
+            <form onSubmit={handleSearch}>
+              <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
+                <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search"
+                  className="bg-transparent text-sm text-gray-700 placeholder-gray-400 focus:outline-none w-full"
+                />
+              </div>
+            </form>
+          </div>
+
           <ul className="py-4">
             {menuItems.map((item, index) => (
               <li key={index} className="border-b border-gray-100">
@@ -191,8 +279,18 @@ export default function Header() {
                     </button>
                     {openDropdown === index && (
                       <div className="bg-gray-50 px-6 py-2">
-                        <a href="#" className="block py-2 text-sm text-gray-600">Option 1</a>
-                        <a href="#" className="block py-2 text-sm text-gray-600">Option 2</a>
+                        {item.dropdownItems.map((drop, i) => (
+                          <button
+                            key={i}
+                            onClick={() => {
+                              redirectToWhatsApp(drop.name)
+                              setIsMobileMenuOpen(false)
+                            }}
+                            className="block w-full text-left py-2 text-sm text-gray-600 hover:text-[#254A99]"
+                          >
+                            {drop.name}
+                          </button>
+                        ))}
                       </div>
                     )}
                   </div>
