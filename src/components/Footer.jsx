@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import axios from 'axios'
 import { redirectToWhatsApp } from '../utils/whatsapp'
+import { API_BASE_URL } from '../config/api'
 
 export default function Footer() {
   const [email, setEmail] = useState('')
@@ -12,7 +13,7 @@ export default function Footer() {
     setStatus('loading')
     setMessage('')
     try {
-      const { data } = await axios.post('http://localhost:5000/api/subscribe', { email })
+      const { data } = await axios.post(`${API_BASE_URL}/subscribe`, { email })
       setStatus('success')
       setMessage(data.message)
       setEmail('')
