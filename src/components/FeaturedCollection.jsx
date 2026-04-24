@@ -33,7 +33,9 @@ function BannerCard() {
 
 function ProductCard({ product }) {
   return (
-    <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer hover:-translate-y-1">
+    <div
+      onClick={() => redirectToWhatsApp(product.name, `₹${product.price.toLocaleString('en-IN')}.00`)}
+      className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer hover:-translate-y-1">
       <div className="p-4">
         <img
           src={product.image}

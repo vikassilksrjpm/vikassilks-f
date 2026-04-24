@@ -22,7 +22,7 @@ function ProductCard({ product }) {
           src={product.image}
           alt={product.name}
           className="w-full aspect-[3/4] object-cover cursor-pointer group-hover:scale-105 transition-transform duration-300"
-          onClick={() => navigate(`/product/${product.id}`)}
+          onClick={() => redirectToWhatsApp(product.name, product.price)}
         />
 
         {product.isNew && (

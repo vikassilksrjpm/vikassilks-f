@@ -1,23 +1,12 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { redirectToWhatsApp } from '../utils/whatsapp'
 
 export default function ProductCard({ product }) {
   const [isWishlisted, setIsWishlisted] = useState(false)
-  const navigate = useNavigate()
-
-  const handleProductClick = () => {
-    navigate(`/product/${product.id}`)
-  }
-
-  const handleAddToCart = (e) => {
-    e.stopPropagation()
-    redirectToWhatsApp(product.name, product.price)
-  }
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden group hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-      <div className="relative" onClick={handleProductClick}>
+      <div className="relative" onClick={() => redirectToWhatsApp(product.name, product.price)}>
         <img 
           src={product.image} 
           alt={product.name}
@@ -49,11 +38,11 @@ export default function ProductCard({ product }) {
       </div>
       
       <div className="p-4">
-        <div onClick={handleProductClick} className="cursor-pointer">
+        <div onClick={() => redirectToWhatsApp(product.name, product.price)} className="cursor-pointer">
           <h3 className="font-semibold text-gray-800 mb-2">{product.name}</h3>
           <p className="text-[#294B99] font-bold text-lg mb-3">{product.price}</p>
         </div>
-        <button onClick={handleAddToCart} className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 rounded-lg transition-colors">
+        <button onClick={() => redirectToWhatsApp(product.name, product.price)} className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 rounded-lg transition-colors">
           Add to Cart
         </button>
       </div>

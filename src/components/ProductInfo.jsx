@@ -6,11 +6,11 @@ export default function ProductInfo({ product }) {
   const [isWishlisted, setIsWishlisted] = useState(false)
 
   const handleBuyNow = () => {
-    redirectToWhatsApp(product.name, product.price)
+    redirectToWhatsApp(product.name, `₹${product.price.toLocaleString()}.00`, quantity)
   }
 
   const handleAddToCart = () => {
-    redirectToWhatsApp(product.name, product.price)
+    redirectToWhatsApp(product.name, `₹${product.price.toLocaleString()}.00`, quantity)
   }
 
   const increaseQuantity = () => {
