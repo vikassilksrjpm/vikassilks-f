@@ -30,17 +30,18 @@ const categorySubs = {
 
 function ProductCard({ product }) {
   const [isWishlisted, setIsWishlisted] = useState(false)
+  const formattedPrice = `₹${product.price.toLocaleString('en-IN')}`
 
   return (
     <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
-      <div className="relative overflow-hidden">
+      <div className="relative overflow-hidden cursor-pointer" onClick={() => redirectToWhatsApp(product.name, formattedPrice)}>
         <img
           src={product.image}
           alt={product.name}
           className="w-full aspect-[3/4] object-cover group-hover:scale-105 transition-transform duration-300"
         />
         <button
-          onClick={() => setIsWishlisted(!isWishlisted)}
+          onClick={(e) => { e.stopPropagation(); setIsWishlisted(!isWishlisted) }}
           className="absolute top-3 right-3 bg-white w-9 h-9 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
         >
           <svg
@@ -52,10 +53,20 @@ function ProductCard({ product }) {
         </button>
       </div>
       <div className="p-4 space-y-3">
-        <h3 className="text-sm font-medium text-gray-800 line-clamp-2">{product.name}</h3>
-        <p className="text-base font-semibold text-[#294B99]">₹{product.price.toLocaleString('en-IN')}</p>
+        <h3
+          onClick={() => redirectToWhatsApp(product.name, formattedPrice)}
+          className="text-sm font-medium text-gray-800 line-clamp-2 cursor-pointer hover:text-[#294B99] transition-colors"
+        >
+          {product.name}
+        </h3>
+        <p
+          onClick={() => redirectToWhatsApp(product.name, formattedPrice)}
+          className="text-base font-semibold text-[#294B99] cursor-pointer"
+        >
+          {formattedPrice}
+        </p>
         <button
-          onClick={() => redirectToWhatsApp(product.name, product.price)}
+          onClick={() => redirectToWhatsApp(product.name, formattedPrice)}
           className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 rounded-lg transition-colors text-sm"
         >
           Add to Cart
