@@ -37,31 +37,31 @@ export default function Header() {
       name: 'WOMENS',
       hasDropdown: true,
       dropdownItems: [
-        { name: 'Kurtis', link: '/' },
-        { name: 'Salwar Suits / Co-ord Set', link: '/' },
-        { name: 'T-Shirts', link: '/' },
-        { name: 'Maternity Wear', link: '/' },
-        { name: 'Night Wear', link: '/' },
-        { name: 'Essentials', link: '/' }
+        { name: 'Kurtis', link: '/category/womens/kurtis' },
+        { name: 'Salwar Suits / Co-ord Set', link: '/category/womens/salwar-suits' },
+        { name: 'T-Shirts', link: '/category/womens/tshirts' },
+        { name: 'Maternity Wear', link: '/category/womens/maternity-wear' },
+        { name: 'Night Wear', link: '/category/womens/night-wear' },
+        { name: 'Essentials', link: '/category/womens/essentials' }
       ]
     },
     {
       name: 'MENS',
       hasDropdown: true,
       dropdownItems: [
-        { name: 'T-Shirts', link: '/' },
-        { name: 'Just White Shirts', link: '/' },
-        { name: 'Shirt & Dhoti Combo', link: '/' },
-        { name: 'Essentials', link: '/' }
+        { name: 'T-Shirts', link: '/category/mens/tshirts' },
+        { name: 'Just White Shirts', link: '/category/mens/white-shirts' },
+        { name: 'Shirt & Dhoti Combo', link: '/category/mens/dhoti-combo' },
+        { name: 'Essentials', link: '/category/mens/essentials' }
       ]
     },
     {
       name: 'SAREES',
       hasDropdown: true,
       dropdownItems: [
-        { name: 'Semi Kanchi Silks', link: '/' },
-        { name: 'Art Silk', link: '/' },
-        { name: 'Cotton Sarees', link: '/' }
+        { name: 'Semi Kanchi Silks', link: '/category/sarees/semi-kanchi' },
+        { name: 'Art Silk', link: '/category/sarees/art-silk' },
+        { name: 'Cotton Sarees', link: '/category/sarees/cotton-sarees' }
       ]
     }
   ]
@@ -184,13 +184,13 @@ export default function Header() {
                       </button>
                       <div className="absolute top-full left-0 mt-1 w-52 bg-white rounded-md shadow-lg py-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                         {item.dropdownItems.map((drop, i) => (
-                          <button
+                          <Link
                             key={i}
-                            onClick={() => redirectToWhatsApp(drop.name)}
+                            to={drop.link}
                             className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#254A99]"
                           >
                             {drop.name}
-                          </button>
+                          </Link>
                         ))}
                       </div>
                     </>
@@ -280,16 +280,14 @@ export default function Header() {
                     {openDropdown === index && (
                       <div className="bg-gray-50 px-6 py-2">
                         {item.dropdownItems.map((drop, i) => (
-                          <button
+                          <Link
                             key={i}
-                            onClick={() => {
-                              redirectToWhatsApp(drop.name)
-                              setIsMobileMenuOpen(false)
-                            }}
-                            className="block w-full text-left py-2 text-sm text-gray-600 hover:text-[#254A99]"
+                            to={drop.link}
+                            className="block py-2 text-sm text-gray-600 hover:text-[#254A99]"
+                            onClick={() => setIsMobileMenuOpen(false)}
                           >
                             {drop.name}
-                          </button>
+                          </Link>
                         ))}
                       </div>
                     )}

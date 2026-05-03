@@ -16,6 +16,9 @@ import ScrollToTop from './components/ScrollToTop'
 import DiscountPopup from './components/DiscountPopup'
 import './index.css'
 
+import CategoryPage from './pages/CategoryPage'
+import AdminDashboard from './pages/AdminDashboard'
+
 function App() {
   return (
     <AuthProvider>
@@ -34,6 +37,8 @@ function App() {
             <Route path="/cart" element={<CartPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/category/:category/:subcategory" element={<CategoryPage />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Routes>
         </BrowserRouter>
       </CartProvider>

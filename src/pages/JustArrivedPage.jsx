@@ -1,19 +1,13 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import axios from 'axios'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import PriceFilterPills from '../components/PriceFilterPills'
-import SidebarFilters from '../components/SidebarFilters'
 import { redirectToWhatsApp } from '../utils/whatsapp'
-import { getPlaceholder } from '../utils/placeholders'
+import { API_BASE_URL } from '../config/api'
 
 function ProductCard({ product }) {
   const [isWishlisted, setIsWishlisted] = useState(false)
-  const navigate = useNavigate()
-
-  const handleAddToCart = () => {
-    redirectToWhatsApp(product.name, product.price)
-  }
 
   return (
     <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
@@ -21,38 +15,28 @@ function ProductCard({ product }) {
         <img
           src={product.image}
           alt={product.name}
-          className="w-full aspect-[3/4] object-cover cursor-pointer group-hover:scale-105 transition-transform duration-300"
-          onClick={() => redirectToWhatsApp(product.name, product.price)}
+          className="w-full aspect-[3/4] object-cover group-hover:scale-105 transition-transform duration-300"
         />
-
-        {product.isNew && (
-          <span className="absolute top-3 left-3 bg-[#FFB088] text-white text-xs font-medium px-3 py-1 rounded-full">
-            New
-          </span>
-        )}
-
+        <span className="absolute top-3 left-3 bg-[#FFB088] text-white text-xs font-medium px-3 py-1 rounded-full">
+          New
+        </span>
         <button
-          onClick={(e) => {
-            e.stopPropagation()
-            setIsWishlisted(!isWishlisted)
-          }}
+          onClick={() => setIsWishlisted(!isWishlisted)}
           className="absolute top-3 right-3 bg-white w-9 h-9 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
         >
-          <svg
-            className={`w-5 h-5 ${isWishlisted ? 'text-red-500 fill-current' : 'text-gray-600'}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg className={`w-5 h-5 ${isWishlisted ? 'text-red-500 fill-current' : 'text-gray-600'}`}
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
           </svg>
         </button>
       </div>
-
       <div className="p-4 space-y-3">
         <h3 className="text-sm font-medium text-gray-800 line-clamp-2">{product.name}</h3>
-        <p className="text-base font-semibold text-gray-900">{product.price}</p>
-        <button onClick={handleAddToCart} className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 rounded-lg transition-colors">
+        <p className="text-base font-semibold text-[#294B99]">₹{product.price.toLocaleString('en-IN')}</p>
+        <button
+          onClick={() => redirectToWhatsApp(product.name, product.price)}
+          className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 rounded-lg transition-colors text-sm"
+        >
           Add to Cart
         </button>
       </div>
@@ -60,21 +44,43 @@ function ProductCard({ product }) {
   )
 }
 
-export default function JustArrivedPage() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [sortBy, setSortBy] = useState('featured')
+function SkeletonCard() {
+  return (
+    <div className="bg-white rounded-xl shadow-md overflow-hidden animate-pulse">
+      <div className="aspect-[3/4] bg-gray-200" />
+      <div className="p-4 space-y-3">
+        <div className="h-4 bg-gray-200 rounded w-3/4" />
+        <div className="h-4 bg-gray-200 rounded w-1/2" />
+        <div className="h-9 bg-gray-200 rounded" />
+      </div>
+    </div>
+  )
+}
 
-  const products = [
-    { id: 1, name: 'Elegant Silk Saree', price: '₹8,999.00', image: getPlaceholder(400, 600, 'Silk+1', 'FFE5E5'), isNew: true },
-    { id: 2, name: 'Traditional Cotton Saree', price: '₹3,499.00', image: getPlaceholder(400, 600, 'Cotton+2', 'FFF0E5'), isNew: true },
-    { id: 3, name: 'Designer Bridal Saree', price: '₹15,999.00', image: getPlaceholder(400, 600, 'Bridal+3', 'FFE0E0'), isNew: true },
-    { id: 4, name: 'Pure Tussar Silk', price: '₹6,799.00', image: getPlaceholder(400, 600, 'Tussar+4', 'FFF5E5'), isNew: true },
-    { id: 5, name: 'Handwoven Cotton', price: '₹4,299.00', image: getPlaceholder(400, 600, 'Handwoven+5', 'FFE8E8'), isNew: true },
-    { id: 6, name: 'Luxury Silk Collection', price: '₹12,999.00', image: getPlaceholder(400, 600, 'Luxury+6', 'FFF8E5'), isNew: true },
-    { id: 7, name: 'Festive Special', price: '₹7,499.00', image: getPlaceholder(400, 600, 'Festive+7', 'FFE3E3'), isNew: true },
-    { id: 8, name: 'Classic Elegance', price: '₹9,299.00', image: getPlaceholder(400, 600, 'Classic+8', 'FFF3E5'), isNew: true },
-    { id: 9, name: 'Royal Kanjivaram', price: '₹18,999.00', image: getPlaceholder(400, 600, 'Kanjivaram+9', 'FFE6E6'), isNew: true }
-  ]
+export default function JustArrivedPage() {
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [sortBy, setSortBy] = useState('default')
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const { data } = await axios.get(`${API_BASE_URL}/products/tag/just-arrived`)
+        setProducts(data.products)
+      } catch (error) {
+        console.error('Failed to fetch just arrived products:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchProducts()
+  }, [])
+
+  const sorted = [...products].sort((a, b) => {
+    if (sortBy === 'price-asc') return a.price - b.price
+    if (sortBy === 'price-desc') return b.price - a.price
+    return 0
+  })
 
   return (
     <div className="min-h-screen bg-[#f5f1ea]">
@@ -89,65 +95,38 @@ export default function JustArrivedPage() {
         </nav>
 
         {/* Page Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-10">
           <h1 className="text-4xl font-medium text-gray-900 mb-3">Just Arrived</h1>
-          <p className="text-lg text-gray-600">Discover our latest premium silks</p>
+          <p className="text-lg text-gray-600">Discover our latest premium collection</p>
         </div>
 
-        {/* Price Filter Pills */}
-        <div className="mb-12">
-          <PriceFilterPills />
+        {/* Sort + Count Bar */}
+        <div className="flex items-center justify-between mb-6">
+          <p className="text-sm text-gray-500">
+            {loading ? 'Loading...' : `${products.length} products`}
+          </p>
+          <select
+            value={sortBy}
+            onChange={e => setSortBy(e.target.value)}
+            className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#294B99]"
+          >
+            <option value="default">Sort by: Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+          </select>
         </div>
 
-        {/* Main Content */}
-        <div className="flex gap-8">
-          {/* Sidebar */}
-          <SidebarFilters isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-
-          {/* Product Grid Section */}
-          <div className="flex-1">
-            {/* Sorting Bar */}
-            <div className="flex items-center justify-between mb-6">
-              <button
-                onClick={() => setIsSidebarOpen(true)}
-                className="lg:hidden flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-sm"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                </svg>
-                Filters
-              </button>
-
-              <div className="flex items-center gap-4 ml-auto">
-                <Link to="/" className="text-sm text-gray-600 hover:text-gray-900">New Arrivals</Link>
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="featured">Sort by: Featured</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
-                  <option value="newest">Newest First</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Product Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-              {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-
-            {/* Load More Button */}
-            <div className="text-center">
-              <button className="px-8 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-lg transition-colors">
-                Load More Products
-              </button>
-            </div>
-          </div>
+        {/* Product Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 mb-12">
+          {loading
+            ? [...Array(8)].map((_, i) => <SkeletonCard key={i} />)
+            : sorted.map(product => <ProductCard key={product._id} product={product} />)
+          }
         </div>
+
+        {!loading && sorted.length === 0 && (
+          <div className="text-center py-20 text-gray-400">No products found.</div>
+        )}
       </div>
 
       <Footer />
