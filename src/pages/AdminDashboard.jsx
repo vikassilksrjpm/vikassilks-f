@@ -475,18 +475,42 @@ function UsersTab({ token }) {
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('products')
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [showChangePassword, setShowChangePassword] = useState(false)
+  const [pwForm, setPwForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' })
+  const [pwLoading, setPwLoading] = useState(false)
   const { user, token, logout } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!user || user.role !== 'admin') {
-      navigate('/login')
-    }
+    if (!user || user.role !== 'admin') navigate('/login')
   }, [user, navigate])
 
   const handleLogout = () => {
     logout()
     navigate('/login')
+  }
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault()
+    if (pwForm.newPassword !== pwForm.confirmPassword) {
+      toast.error('New passwords do not match')
+      return
+    }
+    setPwLoading(true)
+    try {
+      await axios.put(
+        `${API_BASE_URL}/auth/admin/change-password`,
+        { currentPassword: pwForm.currentPassword, newPassword: pwForm.newPassword },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      toast.success('Password changed successfully')
+      setShowChangePassword(false)
+      setPwForm({ currentPassword: '', newPassword: '', confirmPassword: '' })
+    } catch (e) {
+      toast.error(e.response?.data?.message || 'Failed to change password')
+    } finally {
+      setPwLoading(false)
+    }
   }
 
   const navItems = [
@@ -536,6 +560,10 @@ export default function AdminDashboard() {
               <p className="text-xs text-gray-400">Administrator</p>
             </div>
           </div>
+          <button onClick={() => setShowChangePassword(true)}
+            className="w-full flex items-center gap-2 px-4 py-2 text-sm text-yellow-400 hover:bg-yellow-500/10 rounded-lg transition-colors mb-1">
+            🔑 Change Password
+          </button>
           <button onClick={handleLogout}
             className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
             🚪 Logout
@@ -564,6 +592,52 @@ export default function AdminDashboard() {
           {activeTab === 'users' && <UsersTab token={token} />}
         </main>
       </div>
+
+      {/* Change Password Modal */}
+      {showChangePassword && (
+        <Modal title="Change Admin Password" onClose={() => { setShowChangePassword(false); setPwForm({ currentPassword: '', newPassword: '', confirmPassword: '' }) }}>
+          <form onSubmit={handleChangePassword} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+              <input
+                type="password"
+                value={pwForm.currentPassword}
+                onChange={e => setPwForm({ ...pwForm, currentPassword: e.target.value })}
+                required
+                placeholder="Enter current password"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2B4F9E]"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+              <input
+                type="password"
+                value={pwForm.newPassword}
+                onChange={e => setPwForm({ ...pwForm, newPassword: e.target.value })}
+                required
+                placeholder="Enter new password (min 6 chars)"
+                minLength={6}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2B4F9E]"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+              <input
+                type="password"
+                value={pwForm.confirmPassword}
+                onChange={e => setPwForm({ ...pwForm, confirmPassword: e.target.value })}
+                required
+                placeholder="Confirm new password"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2B4F9E]"
+              />
+            </div>
+            <button type="submit" disabled={pwLoading}
+              className="w-full bg-[#2B4F9E] hover:bg-[#1a3a7a] text-white font-semibold py-2.5 rounded-lg transition disabled:opacity-50">
+              {pwLoading ? 'Changing...' : 'Change Password'}
+            </button>
+          </form>
+        </Modal>
+      )}
     </div>
   )
 }
