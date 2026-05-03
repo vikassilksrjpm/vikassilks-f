@@ -148,7 +148,7 @@ export default function SignupPage() {
           <div className="hidden lg:block">
             <div className="bg-gradient-to-br from-[#2B4F9E]/10 to-[#f5f1ea] rounded-2xl p-12 text-center">
               <img
-                src="https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=600&h=800&fit=crop"
+                src="https://res.cloudinary.com/dhkljok4i/image/upload/v1772066108/store_ccfg0k.png"
                 alt="Premium Silk Collection"
                 className="w-full h-96 object-cover rounded-xl mb-8 shadow-lg"
               />

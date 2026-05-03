@@ -209,7 +209,7 @@ export default function LoginPage() {
                 : 'bg-gradient-to-br from-[#2B4F9E]/10 to-[#f5f1ea]'
             }`}>
               <img
-                src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&h=800&fit=crop"
+                src="https://res.cloudinary.com/dhkljok4i/image/upload/v1772066108/store_ccfg0k.png"
                 alt="Vikas Silks"
                 className="w-full h-96 object-cover rounded-xl mb-8 shadow-lg"
               />
