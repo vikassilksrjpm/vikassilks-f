@@ -157,7 +157,7 @@ function ProductForm({ initial, onSubmit, loading, token }) {
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Tags</label>
         <div className="flex gap-4">
-          {['just-arrived', 'bridal', 'featured'].map(tag => (
+          {['just-arrived', 'featured'].map(tag => (
             <label key={tag} className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
               <input
                 type="checkbox"
@@ -535,8 +535,11 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('products')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [showChangePassword, setShowChangePassword] = useState(false)
+  const [showChangeMobile, setShowChangeMobile] = useState(false)
   const [pwForm, setPwForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' })
+  const [mobileForm, setMobileForm] = useState({ newMobileNumber: '', confirmMobileNumber: '' })
   const [pwLoading, setPwLoading] = useState(false)
+  const [mobileLoading, setMobileLoading] = useState(false)
   const { user, token, logout } = useAuth()
   const navigate = useNavigate()
 
@@ -569,6 +572,29 @@ export default function AdminDashboard() {
       toast.error(e.response?.data?.message || 'Failed to change password')
     } finally {
       setPwLoading(false)
+    }
+  }
+
+  const handleChangeMobile = async (e) => {
+    e.preventDefault()
+    if (mobileForm.newMobileNumber !== mobileForm.confirmMobileNumber) {
+      toast.error('Mobile numbers do not match')
+      return
+    }
+    setMobileLoading(true)
+    try {
+      await axios.put(
+        `${API_BASE_URL}/auth/admin/change-mobile`,
+        mobileForm,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      toast.success('Mobile number updated successfully')
+      setShowChangeMobile(false)
+      setMobileForm({ newMobileNumber: '', confirmMobileNumber: '' })
+    } catch (e) {
+      toast.error(e.response?.data?.message || 'Failed to update mobile number')
+    } finally {
+      setMobileLoading(false)
     }
   }
 
@@ -623,6 +649,10 @@ export default function AdminDashboard() {
             className="w-full flex items-center gap-2 px-4 py-2 text-sm text-yellow-400 hover:bg-yellow-500/10 rounded-lg transition-colors mb-1">
             🔑 Change Password
           </button>
+          <button onClick={() => setShowChangeMobile(true)}
+            className="w-full flex items-center gap-2 px-4 py-2 text-sm text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors mb-1">
+            📱 Change Mobile
+          </button>
           <button onClick={handleLogout}
             className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
             🚪 Logout
@@ -658,41 +688,64 @@ export default function AdminDashboard() {
           <form onSubmit={handleChangePassword} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
-              <input
-                type="password"
-                value={pwForm.currentPassword}
+              <input type="password" value={pwForm.currentPassword}
                 onChange={e => setPwForm({ ...pwForm, currentPassword: e.target.value })}
-                required
-                placeholder="Enter current password"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2B4F9E]"
-              />
+                required placeholder="Enter current password"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2B4F9E]" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-              <input
-                type="password"
-                value={pwForm.newPassword}
+              <input type="password" value={pwForm.newPassword}
                 onChange={e => setPwForm({ ...pwForm, newPassword: e.target.value })}
-                required
-                placeholder="Enter new password (min 6 chars)"
-                minLength={6}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2B4F9E]"
-              />
+                required placeholder="Enter new password (min 6 chars)" minLength={6}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2B4F9E]" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
-              <input
-                type="password"
-                value={pwForm.confirmPassword}
+              <input type="password" value={pwForm.confirmPassword}
                 onChange={e => setPwForm({ ...pwForm, confirmPassword: e.target.value })}
-                required
-                placeholder="Confirm new password"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2B4F9E]"
-              />
+                required placeholder="Confirm new password"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2B4F9E]" />
             </div>
             <button type="submit" disabled={pwLoading}
               className="w-full bg-[#2B4F9E] hover:bg-[#1a3a7a] text-white font-semibold py-2.5 rounded-lg transition disabled:opacity-50">
               {pwLoading ? 'Changing...' : 'Change Password'}
+            </button>
+          </form>
+        </Modal>
+      )}
+
+      {/* Change Mobile Modal */}
+      {showChangeMobile && (
+        <Modal title="Change Mobile Number" onClose={() => { setShowChangeMobile(false); setMobileForm({ newMobileNumber: '', confirmMobileNumber: '' }) }}>
+          <form onSubmit={handleChangeMobile} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">New Mobile Number</label>
+              <input
+                type="tel"
+                value={mobileForm.newMobileNumber}
+                onChange={e => setMobileForm({ ...mobileForm, newMobileNumber: e.target.value })}
+                required
+                placeholder="Enter new 10-digit mobile number"
+                maxLength={10}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2B4F9E]"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Mobile Number</label>
+              <input
+                type="tel"
+                value={mobileForm.confirmMobileNumber}
+                onChange={e => setMobileForm({ ...mobileForm, confirmMobileNumber: e.target.value })}
+                required
+                placeholder="Confirm new mobile number"
+                maxLength={10}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2B4F9E]"
+              />
+            </div>
+            <button type="submit" disabled={mobileLoading}
+              className="w-full bg-[#2B4F9E] hover:bg-[#1a3a7a] text-white font-semibold py-2.5 rounded-lg transition disabled:opacity-50">
+              {mobileLoading ? 'Updating...' : 'Update Mobile Number'}
             </button>
           </form>
         </Modal>

@@ -32,7 +32,6 @@ export default function Header() {
 
   const menuItems = [
     { name: 'JUST ARRIVED', link: '/just-arrived' },
-    { name: 'BRIDAL COLLECTION', link: '/bridal-collection' },
     {
       name: 'WOMENS',
       hasDropdown: true,

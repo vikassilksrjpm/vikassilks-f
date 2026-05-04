@@ -6,7 +6,6 @@ import { CartProvider } from './context/CartContext'
 import Home from './pages/Home'
 import ProductDetails from './pages/ProductDetails'
 import JustArrivedPage from './pages/JustArrivedPage'
-import BridalCollectionPage from './pages/BridalCollectionPage'
 import WishlistPage from './pages/WishlistPage'
 import BlogsPage from './pages/BlogsPage'
 import CartPage from './pages/CartPage'
@@ -14,10 +13,9 @@ import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import ScrollToTop from './components/ScrollToTop'
 import DiscountPopup from './components/DiscountPopup'
-import './index.css'
-
 import CategoryPage from './pages/CategoryPage'
 import AdminDashboard from './pages/AdminDashboard'
+import './index.css'
 
 function App() {
   return (
@@ -31,7 +29,6 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/just-arrived" element={<JustArrivedPage />} />
-            <Route path="/bridal-collection" element={<BridalCollectionPage />} />
             <Route path="/wishlist" element={<WishlistPage />} />
             <Route path="/blogs" element={<BlogsPage />} />
             <Route path="/cart" element={<CartPage />} />
