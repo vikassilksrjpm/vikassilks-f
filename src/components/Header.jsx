@@ -155,14 +155,28 @@ export default function Header() {
             </button>
 
             {/* Mobile User Icon */}
-            <button
-              className="md:hidden hover:text-blue-200 transition-colors"
-              onClick={() => navigate(user ? '/profile' : '/login')}
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-            </button>
+            <div className="relative md:hidden">
+              <button
+                className="hover:text-blue-200 transition-colors"
+                onClick={() => user ? setUserDropdownOpen(!userDropdownOpen) : navigate('/login')}
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </button>
+
+              {user && userDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-44 bg-white rounded-md shadow-lg py-2 z-50">
+                  <p className="px-4 py-2 text-sm font-medium text-gray-800 border-b">{user.username}</p>
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
 
             <button 
               className="md:hidden"
