@@ -12,7 +12,7 @@ const SUBCATEGORIES = {
   sarees: ['semi-kanchi', 'art-silk', 'cotton-sarees'],
 }
 
-const emptyProduct = { name: '', description: '', price: '', image: '', category: 'womens', subcategory: 'kurtis', stock: '', tags: [] }
+const emptyProduct = { name: '', description: '', price: '', image: '', category: 'womens', subcategory: 'kurtis', stock: '', tags: [], sizes: [] }
 
 // ── Reusable Modal ────────────────────────────────────────────────────────────
 function Modal({ title, onClose, children }) {
@@ -50,7 +50,13 @@ function ProductForm({ initial, onSubmit, loading, token }) {
   const [form, setForm] = useState(initial)
   const [uploading, setUploading] = useState(false)
   const [preview, setPreview] = useState(initial.image || '')
-  const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
+  const set = (k, v) => setForm(f => {
+    if (k === 'category') {
+      const firstSub = (SUBCATEGORIES[v] || [])[0] || ''
+      return { ...f, category: v, subcategory: firstSub }
+    }
+    return { ...f, [k]: v }
+  })
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0]
@@ -152,6 +158,24 @@ function ProductForm({ initial, onSubmit, loading, token }) {
           onChange={e => { set('image', e.target.value); setPreview(e.target.value) }}
           placeholder="Or paste image URL"
           className="mt-2 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2B4F9E]"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Sizes <span className="text-gray-400 font-normal">(comma separated, e.g. S,M,L,XL)</span></label>
+        <input
+          value={(form.sizes || []).join(',')}
+          onChange={e => set('sizes', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
+          placeholder="S,M,L,XL,XXL"
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2B4F9E]"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Colors <span className="text-gray-400 font-normal">(comma separated, e.g. Red,Blue,Green)</span></label>
+        <input
+          value={(form.colors || []).join(',')}
+          onChange={e => set('colors', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
+          placeholder="Red,Blue,Green"
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2B4F9E]"
         />
       </div>
       <div>
@@ -534,11 +558,8 @@ function UsersTab({ token }) {
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('products')
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [showChangePassword, setShowChangePassword] = useState(false)
   const [showChangeMobile, setShowChangeMobile] = useState(false)
-  const [pwForm, setPwForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' })
   const [mobileForm, setMobileForm] = useState({ newMobileNumber: '', confirmMobileNumber: '' })
-  const [pwLoading, setPwLoading] = useState(false)
   const [mobileLoading, setMobileLoading] = useState(false)
   const { user, token, logout } = useAuth()
   const navigate = useNavigate()
@@ -550,29 +571,6 @@ export default function AdminDashboard() {
   const handleLogout = () => {
     logout()
     navigate('/login')
-  }
-
-  const handleChangePassword = async (e) => {
-    e.preventDefault()
-    if (pwForm.newPassword !== pwForm.confirmPassword) {
-      toast.error('New passwords do not match')
-      return
-    }
-    setPwLoading(true)
-    try {
-      await axios.put(
-        `${API_BASE_URL}/auth/admin/change-password`,
-        { currentPassword: pwForm.currentPassword, newPassword: pwForm.newPassword },
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
-      toast.success('Password changed successfully')
-      setShowChangePassword(false)
-      setPwForm({ currentPassword: '', newPassword: '', confirmPassword: '' })
-    } catch (e) {
-      toast.error(e.response?.data?.message || 'Failed to change password')
-    } finally {
-      setPwLoading(false)
-    }
   }
 
   const handleChangeMobile = async (e) => {
@@ -645,10 +643,6 @@ export default function AdminDashboard() {
               <p className="text-xs text-gray-400">Administrator</p>
             </div>
           </div>
-          <button onClick={() => setShowChangePassword(true)}
-            className="w-full flex items-center gap-2 px-4 py-2 text-sm text-yellow-400 hover:bg-yellow-500/10 rounded-lg transition-colors mb-1">
-            🔑 Change Password
-          </button>
           <button onClick={() => setShowChangeMobile(true)}
             className="w-full flex items-center gap-2 px-4 py-2 text-sm text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors mb-1">
             📱 Change Mobile
@@ -681,39 +675,6 @@ export default function AdminDashboard() {
           {activeTab === 'users' && <UsersTab token={token} />}
         </main>
       </div>
-
-      {/* Change Password Modal */}
-      {showChangePassword && (
-        <Modal title="Change Admin Password" onClose={() => { setShowChangePassword(false); setPwForm({ currentPassword: '', newPassword: '', confirmPassword: '' }) }}>
-          <form onSubmit={handleChangePassword} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
-              <input type="password" value={pwForm.currentPassword}
-                onChange={e => setPwForm({ ...pwForm, currentPassword: e.target.value })}
-                required placeholder="Enter current password"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2B4F9E]" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-              <input type="password" value={pwForm.newPassword}
-                onChange={e => setPwForm({ ...pwForm, newPassword: e.target.value })}
-                required placeholder="Enter new password (min 6 chars)" minLength={6}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2B4F9E]" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
-              <input type="password" value={pwForm.confirmPassword}
-                onChange={e => setPwForm({ ...pwForm, confirmPassword: e.target.value })}
-                required placeholder="Confirm new password"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2B4F9E]" />
-            </div>
-            <button type="submit" disabled={pwLoading}
-              className="w-full bg-[#2B4F9E] hover:bg-[#1a3a7a] text-white font-semibold py-2.5 rounded-lg transition disabled:opacity-50">
-              {pwLoading ? 'Changing...' : 'Change Password'}
-            </button>
-          </form>
-        </Modal>
-      )}
 
       {/* Change Mobile Modal */}
       {showChangeMobile && (

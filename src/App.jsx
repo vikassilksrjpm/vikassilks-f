@@ -12,7 +12,6 @@ import CartPage from './pages/CartPage'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import ScrollToTop from './components/ScrollToTop'
-import DiscountPopup from './components/DiscountPopup'
 import CategoryPage from './pages/CategoryPage'
 import AdminDashboard from './pages/AdminDashboard'
 import './index.css'
@@ -23,7 +22,6 @@ function App() {
       <CartProvider>
         <BrowserRouter>
           <ScrollToTop />
-          <DiscountPopup />
           <ToastContainer position="top-right" autoClose={3000} />
           <Routes>
             <Route path="/" element={<Home />} />

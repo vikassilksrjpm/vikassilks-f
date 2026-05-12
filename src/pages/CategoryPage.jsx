@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
@@ -30,11 +30,12 @@ const categorySubs = {
 
 function ProductCard({ product }) {
   const [isWishlisted, setIsWishlisted] = useState(false)
+  const navigate = useNavigate()
   const formattedPrice = `₹${product.price.toLocaleString('en-IN')}`
 
   return (
     <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
-      <div className="relative overflow-hidden cursor-pointer" onClick={() => redirectToWhatsApp(product.name, formattedPrice)}>
+      <div className="relative overflow-hidden cursor-pointer" onClick={() => navigate(`/product/${product._id}`)}>
         <img
           src={product.image}
           alt={product.name}
@@ -54,17 +55,12 @@ function ProductCard({ product }) {
       </div>
       <div className="p-4 space-y-3">
         <h3
-          onClick={() => redirectToWhatsApp(product.name, formattedPrice)}
+          onClick={() => navigate(`/product/${product._id}`)}
           className="text-sm font-medium text-gray-800 line-clamp-2 cursor-pointer hover:text-[#294B99] transition-colors"
         >
           {product.name}
         </h3>
-        <p
-          onClick={() => redirectToWhatsApp(product.name, formattedPrice)}
-          className="text-base font-semibold text-[#294B99] cursor-pointer"
-        >
-          {formattedPrice}
-        </p>
+        <p className="text-base font-semibold text-[#294B99]">{formattedPrice}</p>
         <button
           onClick={() => redirectToWhatsApp(product.name, formattedPrice)}
           className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 rounded-lg transition-colors text-sm"

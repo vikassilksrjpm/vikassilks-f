@@ -1,10 +1,10 @@
-const WHATSAPP_NUMBER = '918438255947'
+const WHATSAPP_NUMBER = '919843825594'
 
-export const redirectToWhatsApp = (productName = '', productPrice = '', quantity = null) => {
+export const redirectToWhatsApp = (productName = '', productPrice = '', quantity = null, size = null, color = null, imageUrl = null) => {
   let message
 
   if (productName && productPrice) {
-    message = `Hi Vikas Silks!\n\nI'm interested in the following product:\n\nProduct: ${productName}\nPrice: ${productPrice}${quantity ? `\nQuantity: ${quantity}` : ''}\n\nPlease share more details.`
+    message = `Hi Vikas Silks!\n\nI'm interested in the following product:\n\nProduct: ${productName}\nPrice: ${productPrice}${size ? `\nSize: ${size}` : ''}${color ? `\nColor: ${color}` : ''}${quantity ? `\nQuantity: ${quantity}` : ''}${imageUrl ? `\nProduct Image: ${imageUrl}` : ''}\n\nPlease share more details.`
   } else if (productName) {
     message = `Hi Vikas Silks!\n\nI'm interested in: ${productName}\n\nPlease share more details.`
   } else {

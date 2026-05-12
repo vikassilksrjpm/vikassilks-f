@@ -1,8 +1,11 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { redirectToWhatsApp } from '../utils/whatsapp'
 
 function ProductCard({ product }) {
   const [isWishlisted, setIsWishlisted] = useState(false)
+  const navigate = useNavigate()
+  const goToProduct = () => navigate(`/product/${product._id || product.id}`)
 
   return (
     <div className="group">
@@ -11,36 +14,23 @@ function ProductCard({ product }) {
           src={product.image}
           alt={product.name}
           className="w-full aspect-[3/4] object-cover cursor-pointer group-hover:scale-105 transition-transform duration-300"
-          onClick={() => redirectToWhatsApp(product.name, product.price)}
+          onClick={goToProduct}
         />
-
         {product.isNew && (
-          <span className="absolute top-3 left-3 bg-[#FFB088] text-white text-xs font-medium px-3 py-1 rounded-full">
-            New
-          </span>
+          <span className="absolute top-3 left-3 bg-[#FFB088] text-white text-xs font-medium px-3 py-1 rounded-full">New</span>
         )}
-
         <button
-          onClick={(e) => {
-            e.stopPropagation()
-            setIsWishlisted(!isWishlisted)
-          }}
+          onClick={(e) => { e.stopPropagation(); setIsWishlisted(!isWishlisted) }}
           className="absolute top-3 right-3 bg-white w-9 h-9 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
         >
-          <svg
-            className={`w-5 h-5 ${isWishlisted ? 'text-red-500 fill-current' : 'text-gray-600'}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg className={`w-5 h-5 ${isWishlisted ? 'text-red-500 fill-current' : 'text-gray-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
           </svg>
         </button>
       </div>
-
       <div className="text-center space-y-2">
-        <h3 className="text-sm font-medium text-gray-800">{product.name}</h3>
-        <p className="text-sm text-gray-500">{product.price}</p>
+        <h3 className="text-sm font-medium text-gray-800 cursor-pointer" onClick={goToProduct}>{product.name}</h3>
+        <p className="text-sm text-gray-500">₹{typeof product.price === 'number' ? product.price.toLocaleString('en-IN') : product.price}</p>
         <button onClick={() => redirectToWhatsApp(product.name, product.price)} className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 rounded-lg transition-colors text-sm">
           Add to Cart
         </button>
@@ -59,22 +49,29 @@ export default function CollectionSection({ title, products, badge }) {
               {badge}
             </span>
           )}
-          <h2 className="text-4xl font-medium text-gray-900">
-            {title}
-          </h2>
+          <h2 className="text-4xl font-medium text-gray-900">{title}</h2>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-
-        <div className="text-center">
-          <button className="text-sm font-medium text-gray-800 uppercase tracking-wide hover:text-[#294B99] transition-colors underline underline-offset-4">
-            SHOW ALL
-          </button>
-        </div>
+        {products.length === 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="bg-gray-200 rounded-2xl aspect-[3/4] mb-4" />
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto" />
+                  <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto" />
+                  <div className="h-9 bg-gray-200 rounded" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+            {products.map((product) => (
+              <ProductCard key={product._id || product.id} product={product} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )

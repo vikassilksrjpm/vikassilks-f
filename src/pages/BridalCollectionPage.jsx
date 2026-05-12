@@ -14,22 +14,37 @@ const PRICE_RANGES = [
   { label: 'Above ₹40k', min: 40000, max: Infinity },
 ]
 
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
+import { redirectToWhatsApp } from '../utils/whatsapp'
+import { API_BASE_URL } from '../config/api'
+
+const PRICE_RANGES = [
+  { label: 'Under ₹10k', min: 0, max: 10000 },
+  { label: '₹10k - ₹20k', min: 10000, max: 20000 },
+  { label: '₹20k - ₹30k', min: 20000, max: 30000 },
+  { label: '₹30k - ₹40k', min: 30000, max: 40000 },
+  { label: 'Above ₹40k', min: 40000, max: Infinity },
+]
+
 function ProductCard({ product }) {
   const [isWishlisted, setIsWishlisted] = useState(false)
+  const navigate = useNavigate()
 
   return (
     <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
-      <div className="relative bg-[#FFE5E5] overflow-hidden">
+      <div className="relative bg-[#FFE5E5] overflow-hidden cursor-pointer" onClick={() => navigate(`/product/${product._id}`)}>
         <img
           src={product.image}
           alt={product.name}
           className="w-full aspect-[3/4] object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <span className="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-          Bridal
-        </span>
+        <span className="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">Bridal</span>
         <button
-          onClick={() => setIsWishlisted(!isWishlisted)}
+          onClick={(e) => { e.stopPropagation(); setIsWishlisted(!isWishlisted) }}
           className="absolute top-3 right-3 bg-white w-9 h-9 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
         >
           <svg className={`w-5 h-5 ${isWishlisted ? 'text-red-500 fill-current' : 'text-gray-600'}`}
@@ -39,10 +54,10 @@ function ProductCard({ product }) {
         </button>
       </div>
       <div className="p-4 space-y-3">
-        <h3 className="text-sm font-medium text-gray-800 line-clamp-2">{product.name}</h3>
+        <h3 onClick={() => navigate(`/product/${product._id}`)} className="text-sm font-medium text-gray-800 line-clamp-2 cursor-pointer hover:text-[#294B99]">{product.name}</h3>
         <p className="text-base font-semibold text-[#294B99]">₹{product.price.toLocaleString('en-IN')}</p>
         <button
-          onClick={() => redirectToWhatsApp(product.name, product.price)}
+          onClick={() => redirectToWhatsApp(product.name, `₹${product.price.toLocaleString('en-IN')}`)}
           className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 rounded-lg transition-colors text-sm"
         >
           Add to Cart
