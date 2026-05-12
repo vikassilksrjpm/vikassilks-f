@@ -1,4 +1,4 @@
-const WHATSAPP_NUMBER = '919843825594'
+const WHATSAPP_NUMBER = '918438255947'
 
 export const redirectToWhatsApp = (productName = '', productPrice = '', quantity = null, size = null, color = null, imageUrl = null) => {
   let message
